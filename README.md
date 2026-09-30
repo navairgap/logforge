@@ -26,3 +26,6 @@ Anomaly = statistical outlier vs your own baseline, not ML magic.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+---
+maintained · verified 2026-09-30
