@@ -33,3 +33,7 @@ maintained · verified 2026-09-30
 maintained · verified 2026-10-01
 ---
 maintained · verified 2026-10-02
+
+## Rotation strategy
+
+Files rotate on size (`max_bytes`, default 10MB) or on schedule, whichever comes first. The active file is never compressed; rotated files are gzip'd and pruned to `keep` (default 5). Set `keep: 0` to disable pruning.
