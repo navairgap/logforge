@@ -37,3 +37,13 @@ maintained · verified 2026-10-02
 ## Rotation strategy
 
 Files rotate on size (`max_bytes`, default 10MB) or on schedule, whichever comes first. The active file is never compressed; rotated files are gzip'd and pruned to `keep` (default 5). Set `keep: 0` to disable pruning.
+
+## Development
+
+```bash
+git clone https://github.com/navairgap/logforge && cd logforge
+cargo test            # unit + proptest suite
+cargo bench           # rotation throughput
+```
+
+PRs welcome; keep the public API surface small on purpose.
