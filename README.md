@@ -52,3 +52,8 @@ PRs welcome; keep the public API surface small on purpose.
 ## Comparison
 
 vs logrotate: smaller, one binary, no cron needed. vs fluent-bit: logforge writes files, not pipelines. it's the right size for the problem it solves.
+
+
+## Exit codes
+
+`0` rotation happened cleanly. `1` disk error during rotation — check permissions on the target directory. `2` config unparseable.
