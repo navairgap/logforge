@@ -57,3 +57,14 @@ vs logrotate: smaller, one binary, no cron needed. vs fluent-bit: logforge write
 ## Exit codes
 
 `0` rotation happened cleanly. `1` disk error during rotation — check permissions on the target directory. `2` config unparseable.
+
+## Project layout
+
+```
+src/
+  rotate.c    — size/schedule triggers and file cutting
+  compress.c  — gzip of rotated files, prune policy
+  config.c    — toml parsing and defaults
+  main.c      — wiring
+include/      — public header
+```
