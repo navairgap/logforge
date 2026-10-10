@@ -68,3 +68,14 @@ src/
   main.c      — wiring
 include/      — public header
 ```
+
+## Project layout
+
+```
+src/
+  rotate.c    — size/schedule triggers and file cutting
+  compress.c  — gzip of rotated files, prune policy
+  config.c    — toml parsing and defaults
+  main.c      — wiring
+include/      — public header
+```
