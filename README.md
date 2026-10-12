@@ -79,3 +79,7 @@ src/
   main.c      — wiring
 include/      — public header
 ```
+
+## Storage layout
+
+`app.log` is active, uncompressed; `app.log.1.gz` newest rotated; `app.log.2.gz` older. pruning happens after rotation, oldest first, down to `keep`.
