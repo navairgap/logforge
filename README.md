@@ -83,3 +83,7 @@ include/      — public header
 ## Storage layout
 
 `app.log` is active, uncompressed; `app.log.1.gz` newest rotated; `app.log.2.gz` older. pruning happens after rotation, oldest first, down to `keep`.
+
+## Undo
+
+rotation never touches the active file — `app.log` stays readable and writable through every cycle. only rotated copies are compressed or pruned.
