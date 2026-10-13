@@ -87,3 +87,7 @@ include/      — public header
 ## Undo
 
 rotation never touches the active file — `app.log` stays readable and writable through every cycle. only rotated copies are compressed or pruned.
+
+## Signals
+
+SIGUSR1 forces a rotation check immediately; the scheduler keeps running. useful after a deploy that just changed log volume.
