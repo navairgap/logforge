@@ -91,3 +91,7 @@ rotation never touches the active file — `app.log` stays readable and writable
 ## Signals
 
 SIGUSR1 forces a rotation check immediately; the scheduler keeps running. useful after a deploy that just changed log volume.
+
+## Design goals
+
+boring, correct, finished. rotation is a solved problem — the goal is a tool that solves it and gets out of the way. feature requests that add policy complexity get redirected to logrotate, which already has them.
