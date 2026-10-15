@@ -95,3 +95,7 @@ SIGUSR1 forces a rotation check immediately; the scheduler keeps running. useful
 ## Design goals
 
 boring, correct, finished. rotation is a solved problem — the goal is a tool that solves it and gets out of the way. feature requests that add policy complexity get redirected to logrotate, which already has them.
+
+## Internals
+
+rotation decision order: size check first, schedule second, signal third. the active file is never touched by either — reading clients see an unbroken stream.
