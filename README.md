@@ -99,3 +99,7 @@ boring, correct, finished. rotation is a solved problem — the goal is a tool t
 ## Internals
 
 rotation decision order: size check first, schedule second, signal third. the active file is never touched by either — reading clients see an unbroken stream.
+
+## Support
+
+issues with a failing config and the filesystem layout it produced get fast answers. feature requests get pointed at logrotate, kindly.
