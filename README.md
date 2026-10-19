@@ -1,105 +1,43 @@
 # logforge
 
-Structured log parser and anomaly flagger
+A planned local tool for parsing structured logs and highlighting unusual patterns.
 
-> 🚧 **Status: planning** — architecture and README first, code next.
+> **Status: design stage.** This repository currently contains documentation only; parsing, storage, and alerting are not implemented yet.
 
-## Why
+## Goal
 
-Servers drown in logs and starve for insight. logforge parses structured logs (JSON, syslog, combined), extracts patterns, and flags the anomalies — error spikes, new error types, weird IPs — before humans notice.
+Make it easier to inspect application and service logs without requiring a hosted analytics platform.
 
-## Planned features
+## Initial scope
 
-- Parse JSON/syslog/common log formats into a queryable store
-- Baselines per-service error rates; alerts on spikes
-- Detect never-before-seen error signatures
-- CLI + scheduled reports, all local (SQLite backend)
+- Read newline-delimited JSON logs first.
+- Normalize timestamps, severity, source, and message fields when available.
+- Report malformed records with file and line number.
+- Summarize event counts and error rates over a selected time range.
+- Export results in a stable format suitable for shell pipelines.
 
-## Stack
+Additional formats such as syslog or common web-server logs should be added only with fixtures and tests.
 
-`python` `sqlite` `pandas`
+## Design constraints
 
-## Notes
+- Process files locally by default; no telemetry or remote upload.
+- Bound memory use for large files by streaming input.
+- Treat log messages as untrusted data; escape them in terminal output.
+- Make timezone assumptions explicit.
+- Avoid claiming anomaly detection until a baseline and evaluation method are defined.
 
-Anomaly = statistical outlier vs your own baseline, not ML magic.
+## Planned milestones
+
+- [ ] Choose and document the implementation language and dependency policy.
+- [ ] Define a normalized event schema.
+- [ ] Add parser fixtures for valid, malformed, and incomplete records.
+- [ ] Implement streaming summaries and deterministic output.
+- [ ] Add large-file tests and document performance measurements.
+
+## Status honesty
+
+No parser, database, rotation engine, benchmark, or alerting integration is available yet. The README will be updated as those milestones are implemented.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
-
----
-maintained · verified 2026-09-30
----
-maintained · verified 2026-10-01
----
-maintained · verified 2026-10-02
-
-## Rotation strategy
-
-Files rotate on size (`max_bytes`, default 10MB) or on schedule, whichever comes first. The active file is never compressed; rotated files are gzip'd and pruned to `keep` (default 5). Set `keep: 0` to disable pruning.
-
-## Development
-
-```bash
-git clone https://github.com/navairgap/logforge && cd logforge
-cargo test            # unit + proptest suite
-cargo bench           # rotation throughput
-```
-
-PRs welcome; keep the public API surface small on purpose.
-
-
-## Comparison
-
-vs logrotate: smaller, one binary, no cron needed. vs fluent-bit: logforge writes files, not pipelines. it's the right size for the problem it solves.
-
-
-## Exit codes
-
-`0` rotation happened cleanly. `1` disk error during rotation — check permissions on the target directory. `2` config unparseable.
-
-## Project layout
-
-```
-src/
-  rotate.c    — size/schedule triggers and file cutting
-  compress.c  — gzip of rotated files, prune policy
-  config.c    — toml parsing and defaults
-  main.c      — wiring
-include/      — public header
-```
-
-## Project layout
-
-```
-src/
-  rotate.c    — size/schedule triggers and file cutting
-  compress.c  — gzip of rotated files, prune policy
-  config.c    — toml parsing and defaults
-  main.c      — wiring
-include/      — public header
-```
-
-## Storage layout
-
-`app.log` is active, uncompressed; `app.log.1.gz` newest rotated; `app.log.2.gz` older. pruning happens after rotation, oldest first, down to `keep`.
-
-## Undo
-
-rotation never touches the active file — `app.log` stays readable and writable through every cycle. only rotated copies are compressed or pruned.
-
-## Signals
-
-SIGUSR1 forces a rotation check immediately; the scheduler keeps running. useful after a deploy that just changed log volume.
-
-## Design goals
-
-boring, correct, finished. rotation is a solved problem — the goal is a tool that solves it and gets out of the way. feature requests that add policy complexity get redirected to logrotate, which already has them.
-
-## Internals
-
-rotation decision order: size check first, schedule second, signal third. the active file is never touched by either — reading clients see an unbroken stream.
-
-## Support
-
-issues with a failing config and the filesystem layout it produced get fast answers. feature requests get pointed at logrotate, kindly.
+MIT. See [LICENSE](LICENSE).
