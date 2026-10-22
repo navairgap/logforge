@@ -41,3 +41,8 @@ No parser, database, rotation engine, benchmark, or alerting integration is avai
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+
+## Parser reliability
+
+Keep malformed records visible with source file and line number. Define timezone handling, bound record sizes, escape control characters in exports, and use synthetic fixtures rather than production logs containing secrets or personal data.
