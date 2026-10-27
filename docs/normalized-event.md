@@ -25,6 +25,10 @@ LogForge should normalize supported source formats into a small common event sha
 - Stream input line by line so large files do not need to fit in memory.
 - Keep arbitrary fields under `attributes` and cap nesting/record size to avoid resource exhaustion.
 
+## Input resource limits
+
+Enforce the configured maximum record size while reading the input stream, not only after a full line has already been allocated. When a line exceeds the limit, emit one bounded parse diagnostic with its line number, discard the remainder of that line, and continue at the next line boundary where safe. Do not echo the entire rejected record to logs or terminal output. Keep the byte limit separate from any decoded-character limit, because UTF-8 characters can occupy more than one byte.
+
 ## Output determinism
 
 For identical input and options, summary output should be stable. Document timezone handling and sort keys explicitly; do not rely on map iteration order.
