@@ -33,6 +33,10 @@ Enforce the configured maximum record size while reading the input stream, not o
 
 For identical input and options, summary output should be stable. Document timezone handling and sort keys explicitly; do not rely on map iteration order.
 
+## Timestamp interpretation
+
+Parse timestamps with an explicit UTC offset into a normalized UTC instant while retaining the original source text for diagnostics. Never assume a timezone for a timestamp that has none unless the caller selected a documented default. If no default is configured, preserve the raw value and emit a parse warning rather than silently treating local machine time as UTC. Tests should cover offsets, daylight-saving boundaries, missing offsets, and invalid dates.
+
 ## Tests
 
 Fixtures should cover valid JSONL, missing fields, invalid timestamps, unknown severity, malformed lines between valid records, oversized records, control characters, and empty files.
