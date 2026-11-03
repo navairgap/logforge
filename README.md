@@ -1,48 +1,29 @@
 # logforge
 
-A planned local tool for parsing structured logs and highlighting unusual patterns.
+A local tool for parsing structured log lines and highlighting unusual patterns.
 
-> **Status: design stage.** This repository currently contains documentation only; parsing, storage, and alerting are not implemented yet.
+> **Current state: JSONL parser prototype.** A bounded, standard-library JSONL reader and v1 event normalizer are implemented with deterministic unit tests. Summaries, anomaly scoring, rotation, and alerting are not implemented.
 
-## Goal
+## First parser
 
-Make it easier to inspect application and service logs without requiring a hosted analytics platform.
+The parser streams from a binary file handle, enforces a byte limit while reading each physical line, reports malformed lines with a source path and line number, and continues at the next safe line boundary. Timestamps with explicit offsets are normalized to UTC. Timezone-free or invalid timestamps retain their source text and carry a warning rather than being silently interpreted as local time or UTC. Unknown severity values remain available in severity_raw.
 
-## Initial scope
+Run the focused tests with:
 
-- Read newline-delimited JSON logs first.
-- Normalize timestamps, severity, source, and message fields when available.
-- Report malformed records with file and line number.
-- Summarize event counts and error rates over a selected time range.
-- Export results in a stable format suitable for shell pipelines.
+    python -m unittest discover -s tests -v
 
-Additional formats such as syslog or common web-server logs should be added only with fixtures and tests.
+## Scope and safety
 
-## Design constraints
+Input is local by default. Log messages are untrusted text; use safe_terminal_text before displaying them in a terminal. Do not upload logs or include production logs with secrets or personal data in fixtures.
 
-- Process files locally by default; no telemetry or remote upload.
-- Bound memory use for large files by streaming input.
-- Treat log messages as untrusted data; escape them in terminal output.
-- Make timezone assumptions explicit.
-- Avoid claiming anomaly detection until a baseline and evaluation method are defined.
+## Remaining work
 
-## Planned milestones
-
-- [ ] Choose and document the implementation language and dependency policy.
-- [ ] Define a normalized event schema.
-- [ ] Add parser fixtures for valid, malformed, and incomplete records.
-- [ ] Implement streaming summaries and deterministic output.
-- [ ] Add large-file tests and document performance measurements.
-
-## Status honesty
-
-No parser, database, rotation engine, benchmark, or alerting integration is available yet. The README will be updated as those milestones are implemented.
+- [ ] Add summary counts and error-rate windows.
+- [ ] Define deterministic aggregation and export commands.
+- [ ] Add parser fixtures for deeper nested attributes and additional timestamp formats.
+- [ ] Add large-file memory and throughput measurements.
+- [ ] Consider other source formats only with fixtures and tests.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-
-## Parser reliability
-
-Keep malformed records visible with source file and line number. Define timezone handling, bound record sizes, escape control characters in exports, and use synthetic fixtures rather than production logs containing secrets or personal data.
