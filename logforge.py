@@ -26,6 +26,10 @@ KNOWN_FIELDS = {
     "timestamp", "time", "@timestamp", "severity", "level",
     "source", "service", "message", "attributes",
 }
+BIDI_CONTROL_CODES = {
+    0x061C, 0x200E, 0x200F, 0x202A, 0x202B, 0x202C,
+    0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069,
+}
 
 
 @dataclass(frozen=True)
@@ -66,7 +70,9 @@ def safe_terminal_text(value: str) -> str:
             out.append("\\r")
         elif char == "\t":
             out.append("\\t")
-        elif code < 32 or code == 127:
+        elif code in BIDI_CONTROL_CODES:
+            out.append(f"\\u{code:04x}")
+        elif code < 32 or 0x7f <= code <= 0x9f:
             out.append(f"\\x{code:02x}")
         else:
             out.append(char)
