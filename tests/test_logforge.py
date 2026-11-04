@@ -43,6 +43,13 @@ class LogForgeParserTests(unittest.TestCase):
     def test_control_characters_are_rendered_visibly(self):
         self.assertEqual(safe_terminal_text("a\x1b[31m\n"), "a\\x1b[31m\\n")
 
+    def test_directional_and_c1_controls_are_rendered_visibly(self):
+        value = "left" + chr(0x202E) + "right" + chr(0x2066) + chr(0x85)
+        self.assertEqual(
+            safe_terminal_text(value),
+            "left\\\\u202eright\\\\u2066\\\\x85",
+        )
+
     def test_rejects_invalid_limit(self):
         for value in (0, -1, True, "64"):
             with self.subTest(value=value), self.assertRaises(ValueError):
