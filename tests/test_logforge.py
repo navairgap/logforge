@@ -47,7 +47,7 @@ class LogForgeParserTests(unittest.TestCase):
         value = "left" + chr(0x202E) + "right" + chr(0x2066) + chr(0x85)
         self.assertEqual(
             safe_terminal_text(value),
-            "left\\\\u202eright\\\\u2066\\\\x85",
+            "left\\u202eright\\u2066\\x85",
         )
 
     def test_duplicate_keys_are_rejected_at_every_object_depth(self):
