@@ -95,6 +95,16 @@ def _normalize_timestamp(raw: object) -> tuple[str | None, str | None, str | Non
     return normalized, raw, None
 
 
+def _reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
+    """Reject ambiguous JSON objects instead of silently keeping the last value."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON object key")
+        result[key] = value
+    return result
+
+
 def _normalize_object(obj: object, source_path: str, line_number: int) -> ParsedLine:
     if not isinstance(obj, dict):
         return ParseIssue(source_path, line_number, "record must be a JSON object")
@@ -183,7 +193,7 @@ def parse_jsonl(
         try:
             import json
             decoded = content.decode("utf-8")
-            obj = json.loads(decoded)
+            obj = json.loads(decoded, object_pairs_hook=_reject_duplicate_keys)
         except UnicodeDecodeError:
             yield ParseIssue(source_path, line_number, "record is not valid UTF-8")
             continue

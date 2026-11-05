@@ -50,6 +50,15 @@ class LogForgeParserTests(unittest.TestCase):
             "left\\\\u202eright\\\\u2066\\\\x85",
         )
 
+    def test_duplicate_keys_are_rejected_at_every_object_depth(self):
+        stream = io.BytesIO(
+            b'{"message":"first","message":"second"}\\n'
+            b'{"message":"nested","attributes":{"role":"user","role":"admin"}}\\n'
+        )
+        records = list(parse_jsonl(stream, "duplicate-keys.jsonl"))
+        self.assertEqual(len(records), 2)
+        self.assertTrue(all(isinstance(record, ParseIssue) for record in records))
+
     def test_rejects_invalid_limit(self):
         for value in (0, -1, True, "64"):
             with self.subTest(value=value), self.assertRaises(ValueError):
