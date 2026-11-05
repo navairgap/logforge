@@ -52,8 +52,8 @@ class LogForgeParserTests(unittest.TestCase):
 
     def test_duplicate_keys_are_rejected_at_every_object_depth(self):
         stream = io.BytesIO(
-            b'{"message":"first","message":"second"}\\n'
-            b'{"message":"nested","attributes":{"role":"user","role":"admin"}}\\n'
+            b'{"message":"first","message":"second"}\n'
+            b'{"message":"nested","attributes":{"role":"user","role":"admin"}}\n'
         )
         records = list(parse_jsonl(stream, "duplicate-keys.jsonl"))
         self.assertEqual(len(records), 2)
