@@ -65,5 +65,16 @@ class LogForgeParserTests(unittest.TestCase):
                 list(parse_jsonl(io.BytesIO(), max_record_bytes=value))
 
 
+
+    def test_invalid_utf8_line_does_not_hide_following_records(self):
+        stream = io.BytesIO(b'\xff\\n{"message":"after"}\\n')
+        records = list(parse_jsonl(stream, "invalid-utf8.jsonl"))
+        self.assertIsInstance(records[0], ParseIssue)
+        self.assertIn("UTF-8", records[0].reason)
+        self.assertEqual(records[0].line_number, 1)
+        self.assertIsInstance(records[1], NormalizedEvent)
+        self.assertEqual(records[1].message, "after")
+        self.assertEqual(records[1].line_number, 2)
+
 if __name__ == "__main__":
     unittest.main()
